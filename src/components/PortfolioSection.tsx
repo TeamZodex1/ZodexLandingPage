@@ -1,9 +1,11 @@
-import { ExternalLink } from 'lucide-react';
+import { Globe, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { Project } from '@typings/index';
+import ProjectCard from '@components/ProjectCard';
 
 interface PortfolioSectionProps {
-  project: Project;
+  websiteProjects: Project[];
+  appProjects: Project[];
 }
 
 const containerVariants = {
@@ -14,12 +16,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0 },
-};
-
-export default function PortfolioSection({ project }: PortfolioSectionProps) {
+export default function PortfolioSection({ websiteProjects, appProjects }: PortfolioSectionProps) {
   return (
     <section id="portfolio" className="py-24 md:py-32 relative" dir="rtl">
       <div className="absolute inset-0 pointer-events-none">
@@ -38,78 +35,72 @@ export default function PortfolioSection({ project }: PortfolioSectionProps) {
             أعمالنا
           </span>
           <h2 className="font-syne font-bold text-3xl md:text-4xl lg:text-5xl mb-4 text-[#e3e1e9]">
-            مشروع مميز
+            مشاريعنا
           </h2>
           <p className="text-base md:text-lg max-w-xl mx-auto text-[#cbc3d7]">
-            نموذج من المشاريع التي تعكس جودة عملنا واحترافيتنا
+            مجموعة من المشاريع التي تعكس جودة عملنا واحترافيتنا
           </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          className="max-w-2xl mx-auto"
-        >
+        <div id="portfolio-websites" className="mb-16">
           <motion.div
-            key={project.id}
-            variants={cardVariants}
-            whileHover={{ y: -8 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-            className="group relative rounded-2xl border border-white/[0.08] bg-[#1e1f25]/60 overflow-hidden shadow-lg shadow-black/20 hover:shadow-2xl hover:shadow-black/30 hover:border-[#d0bcff]/25 transition-all duration-500"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center gap-3 mb-8"
           >
-            <div className="relative aspect-video overflow-hidden">
-              <motion.img
-                src={project.imageUrl}
-                alt={project.title}
-                className="w-full h-full object-cover"
-                whileHover={{ scale: 1.08 }}
-                transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                loading="lazy"
-              />
-              <motion.a
-                href={project.liveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 flex items-center justify-center"
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute inset-0 bg-[#090A0F]/70 backdrop-blur-sm" />
-                <motion.div
-                  initial={{ scale: 0.8, y: 10 }}
-                  whileHover={{ scale: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative z-10 inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#d0bcff] text-[#23005c] text-sm font-semibold shadow-xl shadow-black/30"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  عرض المشروع
-                </motion.div>
-              </motion.a>
+            <div className="w-8 h-8 rounded-lg bg-[#d0bcff]/10 flex items-center justify-center">
+              <Globe className="w-4 h-4 text-[#d0bcff]" strokeWidth={1.5} />
             </div>
-
-            <div className="p-6 md:p-8">
-              <h3 className="font-syne font-bold text-xl md:text-2xl mb-3 text-[#e3e1e9]">
-                {project.title}
-              </h3>
-              <p className="text-sm md:text-base leading-relaxed mb-6 text-[#cbc3d7]">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {project.techTags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-3.5 py-1.5 rounded-lg text-xs font-medium border border-[#d0bcff]/20 text-[#d0bcff] bg-[#d0bcff]/8"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <h3 className="font-syne font-bold text-xl md:text-2xl text-[#e3e1e9]">
+              المواقع الإلكترونية
+            </h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-[#d0bcff]/30 to-transparent" />
           </motion.div>
-        </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {websiteProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </motion.div>
+        </div>
+
+        <div id="portfolio-apps">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center gap-3 mb-8"
+          >
+            <div className="w-8 h-8 rounded-lg bg-[#4cd7f6]/10 flex items-center justify-center">
+              <Smartphone className="w-4 h-4 text-[#4cd7f6]" strokeWidth={1.5} />
+            </div>
+            <h3 className="font-syne font-bold text-xl md:text-2xl text-[#e3e1e9]">
+              التطبيقات
+            </h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-[#4cd7f6]/30 to-transparent" />
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            {appProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

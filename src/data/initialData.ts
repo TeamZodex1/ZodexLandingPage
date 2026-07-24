@@ -1,13 +1,39 @@
 import type { Project, ServiceItem } from '@typings/index';
+import nabdImg from '@images/1.jpeg';
+import luxImg from '@images/2.jpeg';
 
-export const portfolioProject: Project = {
-  id: 'proj-1',
-  title: 'منصة نبض الحياة الطبية',
-  description: 'منصة رقمية متكاملة لإدارة الخدمات الصحية والمواعيد الطبية، مصممة بأعلى معايير تجربة المستخدم لتوفير رعاية صحية سلسة وآمنة للمرضى والأطباء على حد سواء.',
-  imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80',
-  techTags: ['React', 'TypeScript', 'Tailwind CSS', 'Firebase'],
-  liveLink: 'https://nabd-amber.vercel.app/',
-};
+export const websiteProjects: Project[] = [
+  {
+    id: 'proj-1',
+    title: 'منصة نبض الحياة الطبية',
+    description: 'منصة رقمية متكاملة لإدارة الخدمات الصحية والمواعيد الطبية، مصممة بأعلى معايير تجربة المستخدم لتوفير رعاية صحية سلسة وآمنة للمرضى والأطباء على حد سواء.',
+    imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80',
+    techTags: ['React', 'TypeScript', 'Tailwind CSS', 'Firebase'],
+    liveLink: 'https://nabd-amber.vercel.app/',
+    type: 'website',
+  },
+  {
+    id: 'proj-2',
+    title: 'Lux Shop',
+    description: 'منصة متكاملة للتجارة الإلكترونية تشمل المصادقة، إدارة المنتجات، سلة التسوق، الدفع الآمن، تتبع الطلبات، تقييمات العملاء، لوحة تحكم البائع، وإدارة التوصيل.',
+    imageUrl: luxImg,
+    techTags: ['React', 'TypeScript', 'Tailwind CSS', 'Redux', 'Firebase'],
+    liveLink: 'https://ecommerce-app-nine-kohl.vercel.app/',
+    type: 'website',
+  },
+];
+
+export const appProjects: Project[] = [
+  {
+    id: 'proj-3',
+    title: 'سلامتك',
+    description: 'تطبيق طبي ذكي يساعد المستخدم على متابعة صحته من خلال تذكير الأدوية، إدارة السجلات الطبية، الحصول على نصائح صحية، والاستفادة من المساعد الذكي المدعوم بالذكاء الاصطناعي.',
+    imageUrl: nabdImg,
+    techTags: ['Kotlin', 'Jetpack Compose', 'Firebase', 'AI'],
+    type: 'app',
+    apkDownloadUrl: '/salamtak.apk',
+  },
+];
 
 export const servicesData: ServiceItem[] = [
   {

@@ -4,7 +4,9 @@ export interface Project {
   description: string;
   imageUrl: string;
   techTags: string[];
-  liveLink: string;
+  liveLink?: string;
+  type: 'website' | 'app';
+  apkDownloadUrl?: string;
 }
 
 export interface NavLink {
