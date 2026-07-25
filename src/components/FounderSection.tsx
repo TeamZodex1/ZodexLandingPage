@@ -78,14 +78,8 @@ export default function FounderSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="relative p-8 md:p-10 rounded-2xl border glass bg-[#1e1f25]/60 border-white/[0.06]"
           >
-            <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
-              <motion.div
-                whileHover={{ scale: 1.05, borderColor: '#d0bcff' }}
-                className="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-syne font-bold bg-[#d0bcff]/10 text-[#d0bcff] border-2 border-[#d0bcff]/20 shrink-0"
-              >
-                ع.س
-              </motion.div>
-              <div className="text-center sm:text-right">
+            <div className="flex flex-col items-center gap-6 mb-8">
+              <div className="text-center">
                 <h3 className="font-syne font-bold text-2xl mb-1 text-[#e3e1e9]">
                   عز الدين السادات
                 </h3>
