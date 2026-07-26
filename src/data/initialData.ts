@@ -31,7 +31,7 @@ export const appProjects: Project[] = [
     imageUrl: nabdImg,
     techTags: ['Kotlin', 'Jetpack Compose', 'Firebase', 'AI'],
     type: 'app',
-    apkDownloadUrl: '/salamtak.apk',
+    apkDownloadUrl: '/Salamtak.apk',
   },
 ];
 
