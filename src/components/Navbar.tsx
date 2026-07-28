@@ -91,10 +91,7 @@ export default function Navbar() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    handleNavClick(link);
-                    setProjectsOpen(!projectsOpen);
-                  }}
+                  onClick={() => setProjectsOpen(!projectsOpen)}
                   className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-[#cbc3d7] hover:text-[#e3e1e9] hover:bg-white/[0.06]"
                 >
                   {link.label}
