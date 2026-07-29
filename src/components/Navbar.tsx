@@ -18,15 +18,15 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { label: 'الرئيسية', href: '/' },
   { label: 'خدماتنا', href: 'services' },
+  { label: 'من نحن', href: 'about' },
   { label: 'أعمالنا', href: '/projects', sub: [
     { label: 'المواقع الإلكترونية', href: 'projects-websites', page: '/projects' },
     { label: 'التطبيقات', href: 'projects-apps', page: '/projects' },
   ]},
-  { label: 'من نحن', href: 'about' },
   { label: 'تواصل معنا', href: 'contact' },
 ];
 
-const sectionObserve = ['', 'services', '', 'about', 'contact'];
+const sectionObserve = ['', 'services', 'about', '', 'contact'];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -37,14 +37,14 @@ export default function Navbar() {
 
   useEffect(() => {
     if (location.pathname === '/projects') {
-      setActiveIndex(2);
+      setActiveIndex(3);
       return;
     }
 
     if (location.pathname === '/') {
       const scrollState = location.state?.scrollTo as string | undefined;
       if (scrollState === 'services') setActiveIndex(1);
-      else if (scrollState === 'about') setActiveIndex(3);
+      else if (scrollState === 'about') setActiveIndex(2);
       else if (scrollState === 'contact') setActiveIndex(4);
       else setActiveIndex(0);
     }
@@ -62,7 +62,7 @@ export default function Navbar() {
           if (entry.isIntersecting) {
             const id = entry.target.id;
             if (id === 'services') setActiveIndex(1);
-            else if (id === 'about') setActiveIndex(3);
+            else if (id === 'about') setActiveIndex(2);
             else if (id === 'contact') setActiveIndex(4);
           }
         }
@@ -113,7 +113,7 @@ export default function Navbar() {
     if (link.href === '/') return activeIndex === 0 && location.pathname === '/';
     if (link.href === '/projects') return location.pathname === '/projects';
     if (link.href === 'services') return activeIndex === 1;
-    if (link.href === 'about') return activeIndex === 3;
+    if (link.href === 'about') return activeIndex === 2;
     if (link.href === 'contact') return activeIndex === 4;
     return false;
   };
