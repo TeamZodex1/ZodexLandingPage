@@ -17,16 +17,16 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { label: 'الرئيسية', href: '/' },
-  { label: 'من نحن', href: 'about' },
   { label: 'خدماتنا', href: 'services' },
   { label: 'أعمالنا', href: '/projects', sub: [
     { label: 'المواقع الإلكترونية', href: 'projects-websites', page: '/projects' },
     { label: 'التطبيقات', href: 'projects-apps', page: '/projects' },
   ]},
+  { label: 'من نحن', href: 'about' },
   { label: 'تواصل معنا', href: 'contact' },
 ];
 
-const sectionObserve = ['', 'about', 'services', '', 'contact'];
+const sectionObserve = ['', 'services', '', 'about', 'contact'];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -37,14 +37,14 @@ export default function Navbar() {
 
   useEffect(() => {
     if (location.pathname === '/projects') {
-      setActiveIndex(3);
+      setActiveIndex(2);
       return;
     }
 
     if (location.pathname === '/') {
       const scrollState = location.state?.scrollTo as string | undefined;
-      if (scrollState === 'about') setActiveIndex(1);
-      else if (scrollState === 'services') setActiveIndex(2);
+      if (scrollState === 'services') setActiveIndex(1);
+      else if (scrollState === 'about') setActiveIndex(3);
       else if (scrollState === 'contact') setActiveIndex(4);
       else setActiveIndex(0);
     }
@@ -61,8 +61,8 @@ export default function Navbar() {
         for (const entry of entries) {
           if (entry.isIntersecting) {
             const id = entry.target.id;
-            if (id === 'about') setActiveIndex(1);
-            else if (id === 'services') setActiveIndex(2);
+            if (id === 'services') setActiveIndex(1);
+            else if (id === 'about') setActiveIndex(3);
             else if (id === 'contact') setActiveIndex(4);
           }
         }
@@ -112,8 +112,8 @@ export default function Navbar() {
   const isActive = (link: NavLink) => {
     if (link.href === '/') return activeIndex === 0 && location.pathname === '/';
     if (link.href === '/projects') return location.pathname === '/projects';
-    if (link.href === 'about') return activeIndex === 1;
-    if (link.href === 'services') return activeIndex === 2;
+    if (link.href === 'services') return activeIndex === 1;
+    if (link.href === 'about') return activeIndex === 3;
     if (link.href === 'contact') return activeIndex === 4;
     return false;
   };
@@ -149,7 +149,7 @@ export default function Navbar() {
             {navLinks.map((link) =>
               link.sub ? (
                 <div key={link.href} className="relative">
-                  <div className="relative">
+                  <div className="relative group/btn">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -164,6 +164,7 @@ export default function Navbar() {
                         <ChevronDown className="w-3.5 h-3.5" strokeWidth={2} />
                       </motion.div>
                     </motion.button>
+                    <div className="absolute -bottom-[3px] left-2 right-2 h-[2px] rounded-full bg-[#d0bcff]/40 scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] origin-center" />
                     {isActive(link) && (
                       <motion.div
                         layoutId="navIndicator"
@@ -202,7 +203,7 @@ export default function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <div key={link.href} className="relative">
+                <div key={link.href} className="relative group/btn">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -211,6 +212,7 @@ export default function Navbar() {
                   >
                     {link.label}
                   </motion.button>
+                  <div className="absolute -bottom-[3px] left-2 right-2 h-[2px] rounded-full bg-[#d0bcff]/40 scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] origin-center" />
                   {isActive(link) && (
                     <motion.div
                       layoutId="navIndicator"
