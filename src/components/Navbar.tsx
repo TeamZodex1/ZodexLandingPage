@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Download, ChevronDown, Globe, Smartphone } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
 interface NavSubLink {
   label: string;
@@ -26,11 +26,62 @@ const navLinks: NavLink[] = [
   { label: 'تواصل معنا', href: 'contact' },
 ];
 
+const sectionObserve = ['', 'about', 'services', '', 'contact'];
+
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectsOpen, setProjectsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/projects') {
+      setActiveIndex(3);
+      return;
+    }
+
+    if (location.pathname === '/') {
+      const scrollState = location.state?.scrollTo as string | undefined;
+      if (scrollState === 'about') setActiveIndex(1);
+      else if (scrollState === 'services') setActiveIndex(2);
+      else if (scrollState === 'contact') setActiveIndex(4);
+      else setActiveIndex(0);
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+
+    const ids = sectionObserve.filter(Boolean) as string[];
+    const elements = ids.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            if (id === 'about') setActiveIndex(1);
+            else if (id === 'services') setActiveIndex(2);
+            else if (id === 'contact') setActiveIndex(4);
+          }
+        }
+      },
+      { threshold: 0.3, rootMargin: '-80px 0px 0px 0px' }
+    );
+
+    elements.forEach(el => observer.observe(el));
+
+    const onScroll = () => {
+      if (window.scrollY < 100) setActiveIndex(0);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      elements.forEach(el => observer.unobserve(el));
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [location.pathname]);
 
   const handleNavClick = (link: NavLink) => {
     setMobileOpen(false);
@@ -56,6 +107,15 @@ export default function Navbar() {
     setMobileOpen(false);
     setProjectsOpen(false);
     navigate(sub.page, { state: { scrollTo: sub.href } });
+  };
+
+  const isActive = (link: NavLink) => {
+    if (link.href === '/') return activeIndex === 0 && location.pathname === '/';
+    if (link.href === '/projects') return location.pathname === '/projects';
+    if (link.href === 'about') return activeIndex === 1;
+    if (link.href === 'services') return activeIndex === 2;
+    if (link.href === 'contact') return activeIndex === 4;
+    return false;
   };
 
   return (
@@ -85,64 +145,83 @@ export default function Navbar() {
         </button>
 
         <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            link.sub ? (
-              <div key={link.href} className="relative">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setProjectsOpen(!projectsOpen)}
-                  className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-[#cbc3d7] hover:text-[#e3e1e9] hover:bg-white/[0.06]"
-                >
-                  {link.label}
-                  <motion.div
-                    animate={{ rotate: projectsOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ChevronDown className="w-3.5 h-3.5" strokeWidth={2} />
-                  </motion.div>
-                </motion.button>
-                <AnimatePresence>
-                  {projectsOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6, scaleY: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scaleY: 1 }}
-                      exit={{ opacity: 0, y: -6, scaleY: 0.95 }}
-                      transition={{ duration: 0.15, ease: 'easeOut' }}
-                      className="absolute top-full right-0 mt-1.5 w-52 rounded-xl border border-white/[0.08] bg-[#0F111A]/95 backdrop-blur-xl overflow-hidden shadow-xl"
-                      style={{ transformOrigin: 'top center' }}
+          <LayoutGroup>
+            {navLinks.map((link) =>
+              link.sub ? (
+                <div key={link.href} className="relative">
+                  <div className="relative">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setProjectsOpen(!projectsOpen)}
+                      className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-[#cbc3d7] hover:text-[#e3e1e9] hover:bg-white/[0.06]"
                     >
-                      {link.sub.map((subItem) => (
-                        <motion.button
-                          key={subItem.href}
-                          whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
-                          onClick={() => handleSubClick(subItem)}
-                          className="flex items-center gap-2.5 w-full px-4 py-2.5 text-right text-sm font-medium text-[#cbc3d7] hover:text-[#e3e1e9] transition-colors duration-200"
-                        >
-                          {subItem.label === 'المواقع الإلكترونية' ? (
-                            <Globe className="w-3.5 h-3.5 text-[#d0bcff]" strokeWidth={1.5} />
-                          ) : (
-                            <Smartphone className="w-3.5 h-3.5 text-[#4cd7f6]" strokeWidth={1.5} />
-                          )}
-                          {subItem.label}
-                        </motion.button>
-                      ))}
-                    </motion.div>
+                      {link.label}
+                      <motion.div
+                        animate={{ rotate: projectsOpen ? 180 : 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2} />
+                      </motion.div>
+                    </motion.button>
+                    {isActive(link) && (
+                      <motion.div
+                        layoutId="navIndicator"
+                        className="absolute -bottom-[3px] left-2 right-2 h-[2px] rounded-full bg-[#d0bcff]"
+                        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                      />
+                    )}
+                  </div>
+                  <AnimatePresence>
+                    {projectsOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scaleY: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                        exit={{ opacity: 0, y: -6, scaleY: 0.95 }}
+                        transition={{ duration: 0.15, ease: 'easeOut' }}
+                        className="absolute top-full right-0 mt-1.5 w-52 rounded-xl border border-white/[0.08] bg-[#0F111A]/95 backdrop-blur-xl overflow-hidden shadow-xl"
+                        style={{ transformOrigin: 'top center' }}
+                      >
+                        {link.sub.map((subItem) => (
+                          <motion.button
+                            key={subItem.href}
+                            whileHover={{ backgroundColor: 'rgba(255,255,255,0.04)' }}
+                            onClick={() => handleSubClick(subItem)}
+                            className="flex items-center gap-2.5 w-full px-4 py-2.5 text-right text-sm font-medium text-[#cbc3d7] hover:text-[#e3e1e9] transition-colors duration-200"
+                          >
+                            {subItem.label === 'المواقع الإلكترونية' ? (
+                              <Globe className="w-3.5 h-3.5 text-[#d0bcff]" strokeWidth={1.5} />
+                            ) : (
+                              <Smartphone className="w-3.5 h-3.5 text-[#4cd7f6]" strokeWidth={1.5} />
+                            )}
+                            {subItem.label}
+                          </motion.button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <div key={link.href} className="relative">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleNavClick(link)}
+                    className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-[#cbc3d7] hover:text-[#e3e1e9] hover:bg-white/[0.06]"
+                  >
+                    {link.label}
+                  </motion.button>
+                  {isActive(link) && (
+                    <motion.div
+                      layoutId="navIndicator"
+                      className="absolute -bottom-[3px] left-2 right-2 h-[2px] rounded-full bg-[#d0bcff]"
+                      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+                    />
                   )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <motion.button
-                key={link.href}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleNavClick(link)}
-                className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 text-[#cbc3d7] hover:text-[#e3e1e9] hover:bg-white/[0.06]"
-              >
-                {link.label}
-              </motion.button>
-            )
-          ))}
+                </div>
+              )
+            )}
+          </LayoutGroup>
           <motion.a
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -175,7 +254,7 @@ export default function Navbar() {
             className="md:hidden mt-2 rounded-xl border glass bg-[#0F111A]/90 border-white/[0.08] overflow-hidden"
           >
             <div className="p-2 flex flex-col gap-1">
-              {navLinks.map((link, i) => (
+              {navLinks.map((link, i) =>
                 link.sub ? (
                   <div key={link.href}>
                     <motion.button
@@ -236,7 +315,7 @@ export default function Navbar() {
                     {link.label}
                   </motion.button>
                 )
-              ))}
+              )}
               <motion.a
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
